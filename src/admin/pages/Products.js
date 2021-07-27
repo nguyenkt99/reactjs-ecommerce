@@ -1,9 +1,10 @@
 import React, { Component } from 'react'
-import { Button, Form, Modal, Table } from 'react-bootstrap';
+import { Button, Table } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrash, faEdit, faPlus } from '@fortawesome/free-solid-svg-icons';
-import { get, post, put } from '../../httpHelper';
+import { del, get, post, put } from '../../httpHelper';
 import { Link } from 'react-router-dom';
+import Swal from 'sweetalert2';
 
 export default class Products extends Component {
 
@@ -38,7 +39,7 @@ export default class Products extends Component {
 
     handleEdit(categoryId) {
         this.setState({ isEdit: true });
-        this.fetchCategory(categoryId);
+        this.fetchProduct(categoryId);
         this.setState({ name: this.state.category.name });
         this.setState({ description: this.state.category.description });
     }
@@ -65,6 +66,20 @@ export default class Products extends Component {
                     }
                 });
         }
+    }
+
+    handleDelete(productId) {
+        del(`/products/${productId}`)
+            .then((res) => {
+                if(res.status === 200) {
+                    this.fetchProducts();
+                    Swal.fire(
+                        'Đã xóa',
+                        'Xóa thành công',
+                        'success'
+                    );
+                }
+            })
     }
     
 
@@ -105,7 +120,7 @@ export default class Products extends Component {
                                         <Button onClick={() => this.handleEdit(product.id)}><FontAwesomeIcon icon={faEdit} /></Button>
                                     </td>
                                     <td>
-                                        <Button variant="danger"><FontAwesomeIcon icon={faTrash} /></Button>
+                                        <Button variant="danger" onClick={() => this.handleDelete(product.id)}><FontAwesomeIcon icon={faTrash} /></Button>
                                     </td>
                                 </tr>
                             )

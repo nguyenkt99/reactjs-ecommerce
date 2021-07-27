@@ -2,7 +2,8 @@ import React, { Component } from 'react'
 import { Button, Form, Modal, Table } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrash, faEdit, faPlus } from '@fortawesome/free-solid-svg-icons';
-import { get, post, put } from '../../httpHelper';
+import { del, get, post, put } from '../../httpHelper';
+import Swal from 'sweetalert2';
 
 export default class Categories extends Component {
 
@@ -38,12 +39,23 @@ export default class Categories extends Component {
         this.setState({ [key]: e.target.value });
     }
 
+    handleShow() {
+        this.setState({ show: true });
+    }
+
+    handleClose() {
+        this.setState({ isEdit: false });
+        this.setState({ show: false });
+    }
+
     handleEdit(categoryId) {
         this.setState({ isEdit: true });
         this.fetchCategory(categoryId);
-        this.setState({ name: this.state.category.name });
-        this.setState({ description: this.state.category.description });
-        this.handleShow();
+        setTimeout(() => {
+            this.setState({ name: this.state.category.name });
+            this.setState({ description: this.state.category.description });
+            this.handleShow();
+        }, 100)
     }
 
     handleSubmit() {
@@ -72,14 +84,20 @@ export default class Categories extends Component {
         }
     }
 
-    handleShow() {
-        this.setState({ show: true });
+    handleDelete(categoryId) {
+        del(`/categories/${categoryId}`)
+            .then((res) => {
+                if(res.status === 200) {
+                    this.fetchCategories();
+                    Swal.fire(
+                        'Đã xóa',
+                        'Xóa thành công',
+                        'success'
+                    );
+                }
+            })
     }
-
-    handleClose() {
-        this.setState({ isEdit: false });
-        this.setState({ show: false });
-    }
+    
 
     render() {
         return (
@@ -108,7 +126,7 @@ export default class Categories extends Component {
                                         <Button onClick={() => this.handleEdit(category.id)}><FontAwesomeIcon icon={faEdit} /></Button>
                                     </td>
                                     <td>
-                                        <Button variant="danger"><FontAwesomeIcon icon={faTrash} /></Button>
+                                        <Button variant="danger" onClick={() => this.handleDelete(category.id)}><FontAwesomeIcon icon={faTrash} /></Button>
                                     </td>
                                 </tr>
                             )
