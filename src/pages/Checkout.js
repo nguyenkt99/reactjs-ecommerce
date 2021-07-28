@@ -3,12 +3,40 @@ import { Button, Col, Container, Form, Row, Table } from 'react-bootstrap';
 import { CartContext } from '../contexts/CartContext';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faMapMarkerAlt } from '@fortawesome/free-solid-svg-icons';
-import { post } from '../httpHelper';
+import { get, post } from '../httpHelper';
 import { withRouter } from 'react-router-dom';
 
 
 class Checkout extends Component {
     static contextType = CartContext;
+
+    state = {
+        name: '',
+        phone: '',
+        address: ''
+    }
+
+    componentDidMount() {
+        this.fetchUserDetail();
+    }
+
+    fetchUserDetail() {
+        get(`/userDetails/${JSON.parse(localStorage.getItem('user')).id}`)
+            .then((res) => {
+                this.setState({
+                    name: res.data.name,
+                    phone: res.data.phone,
+                    address: res.data.address
+                })
+            })
+            .catch((error) => {
+                console.log(error);
+            });
+    }
+
+    handleChange(e, key) {
+        this.setState({ [key]: e.target.value })
+    }
 
     renderItems(cart) {
         return Object.keys(cart).map((key, index) => {
@@ -37,19 +65,19 @@ class Checkout extends Component {
             return orderDetail;
         });
         const formData = {
-            name: this.name,
-            phone: this.phone,
-            address: this.address,
+            name: this.state.name,
+            phone: this.state.phone,
+            address: this.state.address,
             userId: JSON.parse(localStorage.getItem('user')).id,
             orderDetails: result
         }
-        
+
         post('/orders', formData)
             .then((res) => {
                 this.props.history.push({
                     pathname: '/thankyou',
                     state: {
-                        orderId: res.data.id 
+                        orderId: res.data.id
                     }
                 });
                 this.context.clearCart();
@@ -69,19 +97,28 @@ class Checkout extends Component {
                 <Col className="p-3" xs="6">
                     <Form>
                         <Row className="mb-3">
-                            <Form.Group as={Col} controlId="name">
-                                <Form.Control type="text" placeholder="Nhập họ tên" onChange={(e) => this.name = e.target.value} />
+                            <Form.Group className="mt-3" as={Col} controlId="name">
+                                <Form.Control type="text" required placeholder="Nhập họ tên"
+                                    value={this.state.name}
+                                    onChange={(e) => this.handleChange(e, 'name')}
+                                />
                             </Form.Group>
-                            <Form.Group as={Col} controlId="phone">
-                                <Form.Control type="text" placeholder="Nhập số điện thoại" onChange={(e) => this.phone = e.target.value} />
+                            <Form.Group className="mt-3" as={Col} controlId="phone">
+                                <Form.Control type="text" required placeholder="Nhập số điện thoại"
+                                    value={this.state.phone}
+                                    onChange={(e) => this.handleChange(e, 'phone')}
+                                />
                             </Form.Group>
                         </Row>
-                        <Form.Group className="mb-3" controlId="formGridAddress1">
-                            <Form.Control placeholder="Nhập địa chỉ" onChange={(e) => this.address = e.target.value} />
+                        <Form.Group className="mt-3" as={Col} controlId="address">
+                            <Form.Control type="text" required placeholder="Nhập địa chỉ"
+                                value={this.state.address}
+                                onChange={(e) => this.handleChange(e, 'address')}
+                            />
                         </Form.Group>
                     </Form>
                 </Col>
-                <Container>
+                <Container className="mt-5">
                     <Table bordered striped>
                         <thead>
                             <tr>

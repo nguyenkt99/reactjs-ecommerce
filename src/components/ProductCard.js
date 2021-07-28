@@ -37,19 +37,23 @@ export default class ProductCard extends Component {
         return (
             <Card style={{ width: '100%', border: "none" }} className="text-center mb-2">
                 <Link to={`../products/${this.props.product.id}`}>
-                    <Card.Img variant="top" src={this.props.product.images[0].url} />
+                    <Card.Img
+                        style={{
+                            width: "100%",
+                            height: "20vw",
+                            objectFit: "cover"
+                        }}
+                        // variant="top" 
+                        src={this.props.product.images[0].url}
+                    />
                 </Link>
                 <Card.Body>
                     <Link to={`../products/${this.props.product.id}`} style={{ color: 'inherit', textDecoration: 'inherit' }}>
-                        <Card.Title style={{ textTransform: "uppercase", fontWeight: "bolder" }}>{this.props.product.name}</Card.Title>
+                        <Card.Title style={{ textTransform: "uppercase", fontWeight: "bolder", whiteSpace: "nowrap", textOverflow: "ellipsis", overflow: "hidden" }}>{this.props.product.name}</Card.Title>
                     </Link>
                     <Card.Text style={{ color: "#4b3a38", fontSize: "16px" }}>
-                        {new Intl.NumberFormat().format(this.props.product.price)} VNĐ ({this.props.product.unit}) 
+                        {new Intl.NumberFormat().format(this.props.product.price)} VNĐ ({this.props.product.unit})
                     </Card.Text>
-                    {/* {this.props.product.status === 'UNAVAILABLE'}
-                    <CartContext.Consumer>
-                        {({ addToCart }) => <Button variant="primary" size="md" onClick={() => addToCart(this.props.product)}>Thêm vào giỏ</Button>}
-                    </CartContext.Consumer> */}
                     {buttons}
                 </Card.Body>
             </Card>

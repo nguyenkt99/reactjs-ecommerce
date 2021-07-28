@@ -1,30 +1,19 @@
 import React, { Component } from 'react'
 import { Button, Table } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faTrash, faEdit, faPlus } from '@fortawesome/free-solid-svg-icons';
-import { del, get, post, put } from '../../httpHelper';
+import { faTrash, faInfoCircle, faPlus } from '@fortawesome/free-solid-svg-icons';
+import { del, get } from '../../httpHelper';
 import { Link } from 'react-router-dom';
 import Swal from 'sweetalert2';
 
-export default class Products extends Component {
+export default class AdminProducts extends Component {
 
     state = {
-        product: {},
-        products: [],
-        show: false,
-        isEdit: false,
-        name: '',
-        description: ''
+        products: []
     }
 
     componentDidMount() {
         this.fetchProducts();
-    }
-
-    fetchProduct(productId) {
-        get(`/products/${productId}`)
-            .then((res) => this.setState({ product: res.data }))
-            .catch((error) => console.log(error));
     }
 
     fetchProducts() {
@@ -33,62 +22,42 @@ export default class Products extends Component {
             .catch((error) => console.log(error));
     }
 
-    handleChange(e, key) {
-        this.setState({ [key]: e.target.value });
-    }
-
-    handleEdit(categoryId) {
-        this.setState({ isEdit: true });
-        this.fetchProduct(categoryId);
-        this.setState({ name: this.state.category.name });
-        this.setState({ description: this.state.category.description });
-    }
-
-    handleSubmit() {
-        if (this.state.isEdit) {
-            put(`/categories/${this.state.category.id}`, {
-                name: this.state.name,
-                description: this.state.description
-            })
-                .then((res) => {
-                    if (res.status === 200) {
-                        this.fetchCategories();
-                    }
-                });
-        } else {
-            post(`/categories`, {
-                name: this.state.name,
-                description: this.state.description
-            })
-                .then((res) => {
-                    if (res.status === 200) {
-                        this.fetchCategories();
-                    }
-                });
-        }
-    }
-
     handleDelete(productId) {
-        del(`/products/${productId}`)
-            .then((res) => {
-                if(res.status === 200) {
-                    this.fetchProducts();
-                    Swal.fire(
-                        'Đã xóa',
-                        'Xóa thành công',
-                        'success'
-                    );
-                }
-            })
+        Swal.fire({
+            title: 'Bạn có chắc chắn xóa?',
+            text: "Bạn sẽ không thể khôi phục!",
+            icon: 'warning',
+            cancelButtonText: 'Hủy',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Có, xóa sản phẩm này'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                del(`/products/${productId}`)
+                    .then((res) => {
+                        if (res.status === 200) {
+                            this.fetchProducts();
+                            Swal.fire(
+                                'Đã xóa',
+                                'Xóa thành công',
+                                'success'
+                            );
+                        }
+                    })
+                    .catch((error) => {
+                        console.log(error);
+                    });
+            }
+        });
     }
-    
 
     render() {
         return (
             <div style={{ padding: "30px" }}>
                 <h3>Sản phẩm</h3>
                 <hr></hr>
-                <Link className="btn btn-success" to="/add-product"><FontAwesomeIcon icon={faPlus}/> Thêm</Link>
+                <Link className="btn btn-success" to="/add-product"><FontAwesomeIcon icon={faPlus} /> Thêm</Link>
                 <Table bordered={false} striped={false} hover>
                     <thead>
                         <tr>
@@ -117,7 +86,7 @@ export default class Products extends Component {
                                     <td>{product.unit}</td>
                                     <td>{product.status === 'NOT_AVAILABLE' ? 'Đang bán' : 'Ngừng bán'}</td>
                                     <td>
-                                        <Button onClick={() => this.handleEdit(product.id)}><FontAwesomeIcon icon={faEdit} /></Button>
+                                        <Link className="btn btn-primary" to={`/edit-product/${product.id}`}><FontAwesomeIcon icon={faInfoCircle} /></Link>
                                     </td>
                                     <td>
                                         <Button variant="danger" onClick={() => this.handleDelete(product.id)}><FontAwesomeIcon icon={faTrash} /></Button>

@@ -17,6 +17,7 @@ export default class CartProvider extends Component {
     addToCart = async (p, quantity = 1) => {
         let cartTemp = this.state.cart;
         if(cartTemp[p.id]) {
+            if(cartTemp[p.id].quantity + quantity <= cartTemp[p.id].product.quantity)
             cartTemp[p.id].quantity += quantity;
         } else {
             cartTemp[p.id] = {

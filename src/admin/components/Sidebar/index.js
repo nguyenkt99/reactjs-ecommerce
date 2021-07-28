@@ -11,22 +11,22 @@ export default class Sidebar extends Component {
                         <ul className="nav flex-column">
                             <li className="nav-item">
                                 <Link className="nav-link" to="/categories">
-                                    Categories
+                                    Thương hiệu
                                 </Link>
                             </li>
                             <li className="nav-item">
                                 <Link className="nav-link" to="/products">
-                                    Products
+                                    Sản phẩm
                                 </Link>
                             </li>
                             <li className="nav-item">
                                 <Link className="nav-link" to="/orders">
-                                    Orders
+                                    Đơn hàng
                                 </Link>
                             </li>
                             <li className="nav-item">
                                 <Link className="nav-link" to="/users">
-                                    Users
+                                    Người dùng
                                 </Link>
                             </li>
                         </ul>

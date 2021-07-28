@@ -27,6 +27,7 @@ class OrderDetail extends Component {
                 }
             })
             .catch((error) => {
+                console.log(error);
                 this.props.history.push({
                     pathname: '/'
                 });
@@ -40,6 +41,9 @@ class OrderDetail extends Component {
                     order: res.data
                 })
             })
+            .catch((error) => {
+                console.log(error);
+            });
     }
 
     render() {

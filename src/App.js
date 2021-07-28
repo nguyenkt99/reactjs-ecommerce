@@ -16,9 +16,13 @@ import Register from './pages/Register';
 import OrderDetail from './pages/OrderDetail';
 import Sidebar from './admin/components/Sidebar';
 import AdminHome from './admin/pages/AdminHome';
-import Categories from './admin/pages/Categories';
-import Products from './admin/pages/Products';
+import AdminCategories from './admin/pages/AdminCategories';
+import AdminProducts from './admin/pages/AdminProducts';
 import AddProduct from './admin/pages/AddProduct';
+import EditProduct from './admin/pages/EditProduct';
+import AdminOrders from './admin/pages/AdminOrders';
+import AdminOrderDetail from './admin/pages/AdminOrderDetail';
+import EditProfile from './pages/EditProfile';
 
 export default class App extends Component {
 
@@ -64,9 +68,12 @@ export default class App extends Component {
                 <div className="row">
                   <Sidebar />
                   <main role="main" className="col-md-9 ml-sm-auto col-lg-10 pt-3 px-4">
-                    <Route path="/categories" component={Categories} />
-                    <Route path="/products" component={Products} />
-                    <Route path="/add-product" component={AddProduct} />
+                    <Route exact path="/categories" component={AdminCategories} />
+                    <Route exact path="/products" component={AdminProducts} />
+                    <Route exact path="/add-product" component={AddProduct} />
+                    <Route exact path="/edit-product/:productId" component={EditProduct} />
+                    <Route exact path="/orders" component={AdminOrders} />
+                    <Route exact path="/orders/:orderId" component={AdminOrderDetail} />
                   </main>
                 </div>
               </div>
@@ -90,6 +97,13 @@ export default class App extends Component {
                   <Route exact path="/products/:productId">
                     <ProductDetail />
                   </Route>
+                  <Route exact path="/edit-profile" render={() => {
+                    const user = localStorage.getItem('user');
+                    return (user && JSON.parse(user).roles[0] === 'ROLE_USER') ?
+                      <EditProfile />
+                      :
+                      <Redirect to='/login' />
+                  }} />
                   <Route exact path="/cart" render={() => { // Nếu là user thì cho vào giỏ hàng
                     const user = localStorage.getItem('user');
                     return (user && JSON.parse(user).roles[0] === 'ROLE_USER') ?
@@ -117,6 +131,7 @@ export default class App extends Component {
                   }} />
                   <Route exact path="/register" component={Register} />
                   <Route exact path="/orders/:orderId" component={OrderDetail} />
+                  
                 </Switch>
                 <Footer />
               </div>

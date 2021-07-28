@@ -126,7 +126,7 @@ class ProductDetail extends Component {
         return (
             <Container>
                 <Row style={{ marginTop: 60 }}>
-                    <Col xs="12" sm="6">
+                    <Col xs="12" md="5">
                         <Carousel interval={null}>
                             {this.state.images.map((image) => (
                                 <Carousel.Item key={image.id}>
@@ -154,11 +154,16 @@ class ProductDetail extends Component {
                         <h3 style={{ color: "#cd140a", fontWeight: "bolder" }}>
                             {new Intl.NumberFormat().format(this.state.product.price)} VNĐ ({this.state.product.unit})
                         </h3>
-                        <InputGroup className="mb-3">
-                            <Button variant="outline-secondary" onClick={() => this.handleMinus()}>-</Button>
-                            <FormControl className="text-center" style={{ maxWidth: 60 }} readOnly={true} value={this.state.quantity} />
-                            <Button variant="outline-secondary" onClick={() => this.handlePlus()}>+</Button>
-                        </InputGroup>
+                        {
+                            !(this.state.product.quantity === 0 || this.state.product.status === 'NOT_AVAILABLE')
+                            &&
+                            <InputGroup className="mb-3">
+                                <Button variant="outline-secondary" onClick={() => this.handleMinus()}>-</Button>
+                                <FormControl className="text-center" style={{ maxWidth: 60 }} readOnly={true} value={this.state.quantity} />
+                                <Button variant="outline-secondary" onClick={() => this.handlePlus()}>+</Button>
+                            </InputGroup>
+                        }
+
                         {buttons}
                     </Col>
                 </Row>

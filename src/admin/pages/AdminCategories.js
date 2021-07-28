@@ -85,19 +85,32 @@ export default class Categories extends Component {
     }
 
     handleDelete(categoryId) {
-        del(`/categories/${categoryId}`)
-            .then((res) => {
-                if(res.status === 200) {
-                    this.fetchCategories();
-                    Swal.fire(
-                        'Đã xóa',
-                        'Xóa thành công',
-                        'success'
-                    );
-                }
-            })
+        Swal.fire({
+            title: 'Bạn có chắc chắn xóa?',
+            text: "Bạn sẽ không thể khôi phục!",
+            icon: 'warning',
+            cancelButtonText: 'Hủy',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Có, xóa thương hiệu này!'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                del(`/categories/${categoryId}`)
+                    .then((res) => {
+                        if (res.status === 200) {
+                            this.fetchCategories();
+                            Swal.fire(
+                                'Đã xóa',
+                                'Xóa thành công',
+                                'success',
+                            );
+                        }
+                    })
+            }
+        });
     }
-    
+
 
     render() {
         return (
@@ -141,11 +154,11 @@ export default class Categories extends Component {
                     <Modal.Body>
                         <Form>
                             <Form.Group className="mb-3" controlId="name">
-                                <Form.Control type="text" placeholder="Nhập tên thương hiệu" value={this.state.name} onChange={(e) => this.handleChange(e, 'name')} />
+                                <Form.Control type="text" required placeholder="Nhập tên thương hiệu" value={this.state.name} onChange={(e) => this.handleChange(e, 'name')} />
                             </Form.Group>
 
                             <Form.Group className="mb-3" controlId="description">
-                                <Form.Control type="text" placeholder="Nhập mô tả" value={this.state.description} onChange={(e) => this.handleChange(e, 'description')} />
+                                <Form.Control type="text" required placeholder="Nhập mô tả" value={this.state.description} onChange={(e) => this.handleChange(e, 'description')} />
                             </Form.Group>
                         </Form>
                     </Modal.Body>
