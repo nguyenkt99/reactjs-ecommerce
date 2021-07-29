@@ -30,6 +30,14 @@ export default class AdminOrders extends Component {
     }
 
     render() {
+        const options = {
+            year: 'numeric',
+            month: '2-digit',
+            day: 'numeric',
+            hour: 'numeric',
+            minute: '2-digit'
+        }
+
         return (
             <div style={{ padding: "30px" }}>
                 <h3>Các đơn hàng</h3>
@@ -38,7 +46,7 @@ export default class AdminOrders extends Component {
                     <thead>
                         <tr>
                             <th>#</th>
-                            <th>User</th>
+                            <th>UserID</th>
                             <th>Thông tin</th>
                             <th>Ngày tạo</th>
                             <th>Tổng tiền</th>
@@ -59,7 +67,10 @@ export default class AdminOrders extends Component {
                                         <p>{order.phone}</p>
                                         <p>{order.address}</p>
                                     </td>
-                                    <td>{order.createdDate}</td>
+                                    {/* <td>{order.createdDate}</td> */}
+                                    <td>
+                                        {new Date(order.createdDate).toLocaleDateString('en-US', options)}
+                                    </td>
                                     <td>
                                         {new Intl.NumberFormat().format(order.total)} (VNĐ)
                                     </td>

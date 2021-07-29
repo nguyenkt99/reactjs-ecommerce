@@ -18,7 +18,7 @@ export default class AdminProducts extends Component {
 
     fetchProducts() {
         get('/products')
-            .then((res) => this.setState({ products: res.data }))
+            .then((res) => this.setState({ products: res.data.sort((a, b) => b.id - a.id) }))
             .catch((error) => console.log(error));
     }
 

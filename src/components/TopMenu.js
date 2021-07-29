@@ -56,7 +56,7 @@ class TopMenu extends Component {
         }
 
         return (
-            <Navbar bg="light" variant="light" expand="lg" sticky="top">
+            <Navbar style={{paddingTop: "0px", paddingBottom: "0px"}} bg="light" variant="light" expand="lg" sticky="top">
                 <Link className="navbar-brand nav-link" to="/">
                     <img
                         src="/logo.png"

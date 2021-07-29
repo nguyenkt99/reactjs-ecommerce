@@ -152,7 +152,7 @@ export default class Categories extends Component {
                     </Modal.Header>
 
                     <Modal.Body>
-                        <Form>
+                        <Form id="addCategoryForm" onSubmit={() => this.handleSubmit()}>
                             <Form.Group className="mb-3" controlId="name">
                                 <Form.Control type="text" required placeholder="Nhập tên thương hiệu" value={this.state.name} onChange={(e) => this.handleChange(e, 'name')} />
                             </Form.Group>
@@ -165,7 +165,7 @@ export default class Categories extends Component {
 
                     <Modal.Footer>
                         <Button variant="secondary" onClick={() => this.handleClose()}>Đóng</Button>
-                        <Button variant="primary" onClick={() => this.handleSubmit()}>OK</Button>
+                        <Button variant="primary" type="submit" form="addCategoryForm">OK</Button>
                     </Modal.Footer>
                 </Modal>
             </div>

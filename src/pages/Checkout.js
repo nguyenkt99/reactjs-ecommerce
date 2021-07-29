@@ -72,6 +72,8 @@ class Checkout extends Component {
             orderDetails: result
         }
 
+        console.log(formData);
+
         post('/orders', formData)
             .then((res) => {
                 this.props.history.push({
@@ -95,7 +97,7 @@ class Checkout extends Component {
                 <hr></hr>
                 <h5 style={{ color: "#ee4d2d" }}><FontAwesomeIcon icon={faMapMarkerAlt} /> Địa chỉ nhận hàng</h5>
                 <Col className="p-3" xs="6">
-                    <Form>
+                    <Form id="checkoutForm" onSubmit={(e) => this.handleSubmit(e)} >
                         <Row className="mb-3">
                             <Form.Group className="mt-3" as={Col} controlId="name">
                                 <Form.Control type="text" required placeholder="Nhập họ tên"
@@ -147,7 +149,7 @@ class Checkout extends Component {
                                 </p>
                             }
                         </CartContext.Consumer>
-                        <Button className="btn btn-danger float-end" type="submit" onClick={(e) => this.handleSubmit(e)} >Đặt hàng</Button>
+                        <Button className="btn btn-danger float-end" type="submit" form="checkoutForm">Đặt hàng</Button>
                     </div>
                 </Container>
             </div>

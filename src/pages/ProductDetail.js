@@ -14,7 +14,7 @@ class ProductDetail extends Component {
         images: [],
         reviews: [],
         ratingProduct: null,
-        rating: null,
+        rating: 5,
         review: '',
         quantity: 1
     }
@@ -29,6 +29,9 @@ class ProductDetail extends Component {
             .then((response) => {
                 this.setState({ product: response.data });
                 this.setState({ images: response.data.images });
+            })
+            .catch((error) => {
+                this.props.history.push('/');
             });
     }
 
@@ -78,6 +81,11 @@ class ProductDetail extends Component {
         if (localStorage.getItem('user')) {
             user = JSON.parse(localStorage.getItem('user'))
         }
+
+        if(!user) {
+            this.props.history.push('/login');
+        }
+
         const comment = e.target.formBasicReview.value;
         const id = user !== null ? user.id : console.log('user not exists in localStorage');
         const formData = {
@@ -86,8 +94,11 @@ class ProductDetail extends Component {
             userId: id
         }
 
+        console.log(formData);
+
         post(`/products/${this.state.product.id}/reviews`, formData)
             .then((res) => {
+                console.log(res.data);
                 this.setState({ rating: null, review: '' });
                 this.fetchReviews();
             });
@@ -193,6 +204,8 @@ class ProductDetail extends Component {
                                 <FormControl
                                     style={{ width: "400px", height: "100px" }}
                                     as="textarea" aria-label="With textarea"
+                                    required
+                                    minLength="20"
                                     placeholder="Viết bình luận"
                                     value={this.state.review}
                                     onChange={(e) => this.handleFieldChange(e)} />

@@ -23,6 +23,8 @@ import EditProduct from './admin/pages/EditProduct';
 import AdminOrders from './admin/pages/AdminOrders';
 import AdminOrderDetail from './admin/pages/AdminOrderDetail';
 import EditProfile from './pages/EditProfile';
+import AdminUsers from './admin/pages/AdminUsers';
+import AdminUserDetail from './admin/pages/AdminUserDetail';
 
 export default class App extends Component {
 
@@ -74,6 +76,8 @@ export default class App extends Component {
                     <Route exact path="/edit-product/:productId" component={EditProduct} />
                     <Route exact path="/orders" component={AdminOrders} />
                     <Route exact path="/orders/:orderId" component={AdminOrderDetail} />
+                    <Route exact path="/users" component={AdminUsers} />
+                    <Route exact path="/users/:userId" component={AdminUserDetail} />
                   </main>
                 </div>
               </div>
@@ -86,52 +90,45 @@ export default class App extends Component {
               <div className="App">
                 <TopMenu onLogoutSuccess={() => this.onLogoutSuccess()} />
                 <Switch>
-                  <Route exact path="/login" render={() =>
-                    !this.state.isLogin ? <Login onLoginSuccess={() => this.onLoginSuccess()} /> : <Redirect to="/" />
-                  } />
-                  <Route exact path="/" render={() =>
-                    (localStorage.getItem('user') && JSON.parse(localStorage.getItem('user')).roles[0] === 'ROLE_ADMIN') ? <AdminHome /> : <Home />} />
                   <Route path="/product-categories/:categoryId">
                     <ProductCategories />
                   </Route>
                   <Route exact path="/products/:productId">
                     <ProductDetail />
                   </Route>
-                  <Route exact path="/edit-profile" render={() => {
-                    const user = localStorage.getItem('user');
-                    return (user && JSON.parse(user).roles[0] === 'ROLE_USER') ?
-                      <EditProfile />
-                      :
-                      <Redirect to='/login' />
-                  }} />
-                  <Route exact path="/cart" render={() => { // Nếu là user thì cho vào giỏ hàng
-                    const user = localStorage.getItem('user');
-                    return (user && JSON.parse(user).roles[0] === 'ROLE_USER') ?
-                      <Cart />
-                      :
-                      <Redirect to='/login' />
-                  }} />
-                  <Route exact path="/checkout" render={() => // Nếu giỏ hàng có sản phẩm thì mới cho checkout
-                    <CartContext.Consumer>
-                      {({ cart }) => (
-                        Object.keys(cart).reduce((acc, key) => acc + cart[key].quantity, 0) > 0 ?
-                          <Checkout />
-                          :
-                          <Redirect to='/cart' />
-                      )}
-                    </CartContext.Consumer>
-                  } />
-                  <Route exact path="/thankyou" component={ThankYou} />
-                  <Route exact path="/orders" render={() => {
-                    const user = localStorage.getItem('user');
-                    return (user && JSON.parse(user).roles[0] === 'ROLE_USER') ?
-                      <Orders userId={JSON.parse(user).id} />
-                      :
-                      <Redirect to='/login' />
-                  }} />
                   <Route exact path="/register" component={Register} />
-                  <Route exact path="/orders/:orderId" component={OrderDetail} />
-                  
+                  <Route exact path="/login" render={() =>
+                    !this.state.isLogin ? <Login onLoginSuccess={() => this.onLoginSuccess()} /> : <Redirect to="/" />
+                  } />
+                  <Route exact path="/" render={() =>
+                    (localStorage.getItem('user') && JSON.parse(localStorage.getItem('user')).roles[0] === 'ROLE_ADMIN') ?
+                      <AdminHome /> : <Home />
+                  } />
+
+                  {(localStorage.getItem('user') && JSON.parse(localStorage.getItem('user')).roles[0] === 'ROLE_USER') ?
+                    <>
+                      <Route exact path="/cart" component={Cart} />
+                      <Route exact path="/edit-profile" component={EditProfile} />
+                      <Route exact path="/thankyou" component={ThankYou} />
+                      <Route exact path="/orders" render={() =>
+                        <Orders userId={JSON.parse(localStorage.getItem('user')).id} />
+                      } />
+                      <Route exact path="/orders/:orderId" component={OrderDetail} />
+                      <Route exact path="/checkout" render={() => // Nếu giỏ hàng có sản phẩm thì mới cho checkout
+                        <CartContext.Consumer>
+                          {({ cart }) => (
+                            Object.keys(cart).reduce((acc, key) => acc + cart[key].quantity, 0) > 0 ?
+                              <Checkout />
+                              :
+                              <Redirect to='/cart' />
+                          )}
+                        </CartContext.Consumer>
+                      } />
+                    </>
+                    :
+                    <Redirect to='/login' />
+                  }
+
                 </Switch>
                 <Footer />
               </div>
